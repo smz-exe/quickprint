@@ -78,7 +78,7 @@ export function QuickPrintApp() {
     setEncoding(true);
     setEncodingProgress(0);
 
-    // Use async encoder instead of worker
+    // Use FileReader-based encoder (same as Sample.html)
     encodeFileToBase64(selectedFile, (update) => {
       if (update.error) {
         toast.error(`Encoding failed: ${update.error}`);
@@ -104,6 +104,10 @@ export function QuickPrintApp() {
           setBase64Data('');
         }
       }
+    }).catch((error) => {
+      // Additional error handling for Promise rejection
+      toast.error(`Encoding failed: ${error.message}`);
+      setEncoding(false);
     });
   }, []);
 

@@ -1,8 +1,6 @@
 /**
- * Base64 encoding with progress tracking
+ * Base64 encoding using FileReader.readAsDataURL() (same as Sample.html)
  */
-
-const CHUNK_SIZE = 64 * 1024; // 64KB chunks
 
 export interface EncodingProgress {
   progress?: number;
@@ -11,48 +9,50 @@ export interface EncodingProgress {
   error?: string;
 }
 
-export async function encodeFileToBase64(
+export function encodeFileToBase64(
   file: File,
   onProgress: (update: EncodingProgress) => void
 ): Promise<void> {
-  try {
-    const arrayBuffer = await file.arrayBuffer();
-    const uint8Array = new Uint8Array(arrayBuffer);
-    const totalChunks = Math.ceil(uint8Array.length / CHUNK_SIZE);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
 
-    let base64String = '';
+    // Progress tracking during file reading
+    reader.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const progress = (event.loaded / event.total) * 100;
+        onProgress({ progress: Math.round(progress) });
+      }
+    };
 
-    for (let i = 0; i < totalChunks; i++) {
-      const start = i * CHUNK_SIZE;
-      const end = Math.min(start + CHUNK_SIZE, uint8Array.length);
-      const chunk = uint8Array.slice(start, end);
+    // File reading completed
+    reader.onload = () => {
+      try {
+        const result = reader.result as string;
+        // Remove "data:application/pdf;base64," prefix (same as Sample.html)
+        const index = result.indexOf(',') + 1;
+        const base64Data = result.slice(index);
 
-      // Convert chunk to base64
-      const binaryString = Array.from(chunk)
-        .map((byte) => String.fromCharCode(byte))
-        .join('');
-      const chunkBase64 = btoa(binaryString);
+        onProgress({
+          base64: base64Data,
+          complete: true,
+        });
+        resolve();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to process Base64 data';
+        onProgress({ error: errorMessage });
+        reject(new Error(errorMessage));
+      }
+    };
 
-      base64String += chunkBase64;
+    // Error handling
+    reader.onerror = () => {
+      const errorMessage = 'Failed to read file';
+      onProgress({ error: errorMessage });
+      reject(new Error(errorMessage));
+    };
 
-      // Report progress
-      const progress = ((i + 1) / totalChunks) * 100;
-      onProgress({
-        progress: Math.round(progress),
-      });
-
-      // Yield to prevent blocking the UI
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    }
-
-    // Send the complete Base64 string
-    onProgress({
-      base64: base64String,
-      complete: true,
-    });
-  } catch (error) {
-    onProgress({
-      error: error instanceof Error ? error.message : 'Failed to encode file',
-    });
-  }
+    // Start reading file as data URL (same as Sample.html)
+    reader.readAsDataURL(file);
+  });
 }

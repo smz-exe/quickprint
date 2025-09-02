@@ -8,9 +8,9 @@ export function estimateBase64Size(binarySize: number): number {
 
 /**
  * Check if Base64 size is within the URL scheme limit
- * Limit is 750KB (768,000 bytes)
+ * iOS recommended PDF size: 500KB → Base64 size: ~683KB
  */
-export const BASE64_SIZE_LIMIT = 750 * 1024; // 750KB
+export const BASE64_SIZE_LIMIT = Math.ceil((500 * 1024 * 4) / 3); // 683KB (500KB PDF equivalent)
 
 export function isWithinSizeLimit(base64Size: number): boolean {
   return base64Size <= BASE64_SIZE_LIMIT;

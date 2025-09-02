@@ -26,6 +26,10 @@
 /docs
 CLAUDE.md
 
+# Generated files
+/public/pdf.worker.min.mjs
+
+
 # debug
 npm-debug.log*
 yarn-debug.log*

@@ -5,8 +5,9 @@ export interface PrintJob {
   binaryBytes: number;
   base64Bytes: number;
   fitToWidth: boolean;
-  rotation: 0 | 270;
-  timeoutMs: number;
+  // Legacy fields for backward compatibility (optional)
+  rotation?: 0 | 270;
+  timeoutMs?: number;
   result?: {
     status: 'success' | 'fail';
     code?: number;

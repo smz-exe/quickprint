@@ -34,9 +34,6 @@ export function QuickPrintApp() {
   const [history, setHistory] = useState<PrintJob[]>([]);
   const [settings, setSettings] = useState<PrintSettings>({
     fitToWidth: true,
-    rotation: 0,
-    timeoutMs: 15000,
-    errorDialog: true,
   });
 
   // Load history on mount
@@ -124,8 +121,6 @@ export function QuickPrintApp() {
       binaryBytes: file.size,
       base64Bytes: base64Data.length,
       fitToWidth: settings.fitToWidth,
-      rotation: settings.rotation,
-      timeoutMs: settings.timeoutMs,
     };
     addToHistory(job);
     setHistory(getHistory());
@@ -156,15 +151,12 @@ export function QuickPrintApp() {
       // Use existing settings from the job
       const retrySettings: PrintSettings = {
         fitToWidth: job.fitToWidth,
-        rotation: job.rotation,
-        timeoutMs: job.timeoutMs,
-        errorDialog: settings.errorDialog,
       };
 
       setSettings(retrySettings);
       handlePrint();
     },
-    [base64Data, file, settings.errorDialog, handlePrint]
+    [base64Data, file, handlePrint]
   );
 
   const handleClear = useCallback(() => {

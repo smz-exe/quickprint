@@ -133,11 +133,8 @@ export function QuickPrintApp() {
     // Build and navigate to URL scheme
     try {
       const printUrl = buildPrintUrl({
-        base64Data: encodeURIComponent(base64Data),
+        base64Data: base64Data,
         fitToWidth: settings.fitToWidth,
-        rotation: settings.rotation,
-        timeoutMs: settings.timeoutMs,
-        errorDialog: settings.errorDialog,
         txid,
       });
 

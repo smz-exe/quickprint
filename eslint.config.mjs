@@ -30,11 +30,11 @@ export default tseslint.config(
   },
   {
     ignores: [
-      '.next/**', 
-      'node_modules/**', 
-      'out/**', 
-      'build/**', 
-      'dist/**', 
+      '.next/**',
+      'node_modules/**',
+      'out/**',
+      'build/**',
+      'dist/**',
       '.turbo/**',
       'public/**',
     ],

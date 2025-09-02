@@ -1,9 +1,6 @@
 interface PrintParams {
   base64Data: string;
   fitToWidth: boolean;
-  rotation: 0 | 270;
-  timeoutMs: number;
-  errorDialog: boolean;
   txid: string;
 }
 
@@ -15,19 +12,28 @@ export function buildPrintUrl(params: PrintParams): string {
   const successCallback = `${origin}/print/callback?status=success&txid=${params.txid}`;
   const failCallback = `${origin}/print/callback?status=fail&txid=${params.txid}`;
 
-  const urlParams = new URLSearchParams({
-    Format: 'pdf',
-    Data: params.base64Data, // Already encoded
-    PaperWidth: '58',
-    FitToWidth: params.fitToWidth ? 'yes' : 'no',
-    Rotation: params.rotation.toString(),
-    Timeout: params.timeoutMs.toString(),
-    ErrorDialog: params.errorDialog ? 'yes' : 'no',
-    CallbackSuccess: successCallback,
-    CallbackFail: failCallback,
-  });
+  // Build URL manually following Sample.html format exactly
+  const url =
+    'siiprintagent://1.0/print?' +
+    'CallbackSuccess=' +
+    encodeURIComponent(successCallback) +
+    '&' +
+    'CallbackFail=' +
+    encodeURIComponent(failCallback) +
+    '&' +
+    'Format=pdf&' +
+    'Data=' +
+    encodeURIComponent(params.base64Data) +
+    '&' +
+    'SelectOnError=yes&' +
+    'CutType=full&' +
+    'CutFeed=yes&' +
+    'FitToWidth=' +
+    (params.fitToWidth ? 'yes' : 'no') +
+    '&' +
+    'PaperWidth=58';
 
-  return `siiprintagent://1.0/print?${urlParams.toString()}`;
+  return url;
 }
 
 /**

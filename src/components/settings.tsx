@@ -53,6 +53,12 @@ export function Settings({ settings, onSettingsChange, disabled }: SettingsProps
             Compatible with SII MP-B20 thermal printer
           </p>
         </div>
+
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm text-amber-900">
+            <strong>Note:</strong> The timeout duration is set to 5 minutes.
+          </p>
+        </div>
       </CardContent>
     </Card>
   );

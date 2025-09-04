@@ -31,7 +31,9 @@ export function buildPrintUrl(params: PrintParams): string {
     'FitToWidth=' +
     (params.fitToWidth ? 'yes' : 'no') +
     '&' +
-    'PaperWidth=58';
+    'PaperWidth=58' +
+    '&' +
+    'Timeout=300000';
 
   return url;
 }
